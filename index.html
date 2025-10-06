@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>GannonTale - Space Weather Adventure</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            }
+            .hero-section {
+                padding: 60px 0;
+            }
+            .game-card {
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                padding: 50px;
+                margin: 20px 0;
+            }
+            .game-title {
+                font-size: 3.5rem;
+                font-weight: bold;
+                color: #667eea;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+                margin-bottom: 30px;
+            }
+            .game-subtitle {
+                font-size: 1.3rem;
+                color: #555;
+                margin-bottom: 40px;
+                line-height: 1.8;
+            }
+            .section-title {
+                font-size: 1.8rem;
+                font-weight: 600;
+                color: #764ba2;
+                margin-top: 30px;
+                margin-bottom: 20px;
+            }
+            .description-text {
+                font-size: 1.1rem;
+                color: #444;
+                line-height: 1.8;
+                margin-bottom: 20px;
+            }
+            .start-button {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border: none;
+                padding: 20px 60px;
+                font-size: 1.5rem;
+                font-weight: bold;
+                color: white;
+                border-radius: 50px;
+                box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+                transition: all 0.3s ease;
+                text-decoration: none;
+                display: inline-block;
+                margin: 30px 0;
+            }
+            .start-button:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+                color: white;
+            }
+            .tech-badge {
+                display: inline-block;
+                background: #f0f0f0;
+                padding: 8px 16px;
+                border-radius: 20px;
+                margin: 5px;
+                font-size: 0.95rem;
+                color: #666;
+                font-weight: 500;
+            }
+            .footer-text {
+                text-align: center;
+                color: white;
+                margin-top: 40px;
+                padding: 20px;
+                font-size: 0.9rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="hero-section">
+                <div class="game-card">
+                    <h1 class="game-title text-center">🌟 GannonTale 🌟</h1>
+
+                    <p class="game-subtitle text-center">
+                        A Space Weather Adventure Through the Eyes of a Coronal
+                        Mass Ejection
+                    </p>
+
+                    <div class="text-center">
+                        <a href="game.html" class="start-button">
+                            🎮 Start Game
+                        </a>
+                    </div>
+
+                    <hr class="my-5" />
+
+                    <h2 class="section-title">About the Game</h2>
+                    <p class="description-text">
+                        <strong>GannonTale</strong> is a short dialogue-based
+                        game focused on explaining how space weather can impact
+                        life on Earth through the eyes of a CME (Gannon Storm)
+                        and the citizens of a small city.
+                    </p>
+
+                    <h2 class="section-title">Educational Goal</h2>
+                    <p class="description-text">
+                        The goal is to have an accessible and comprehensive tool
+                        that students on all levels can use to understand what
+                        space weather is and how it can affect people on Earth.
+                        With that scope in mind, we decided to create a game, a
+                        media type that most students are familiar and engaged
+                        with. Inspired by the late 90's and 2000's RPG games,
+                        GannonTale conveys the impacts and importance of space
+                        weather by showing situations and consequences to the
+                        player, rather than just explaining the phenomenon.
+                    </p>
+
+                    <h2 class="section-title">Technology</h2>
+                    <p class="description-text">
+                        For creating the game, the
+                        <strong>Phaser</strong> engine was used. Phaser is a
+                        Desktop and Mobile HTML5 game framework. A fast, free
+                        and fun open source framework for Canvas and WebGL
+                        powered browser games.
+                    </p>
+                    <p class="description-text">
+                        The game assets were created using
+                        <strong>Tiled</strong>, a map editor tool, as well as
+                        some smaller media conversion tools and tweaks made by
+                        hand.
+                    </p>
+
+                    <div class="text-center mt-4">
+                        <span class="tech-badge">Phaser 3</span>
+                        <span class="tech-badge">HTML5</span>
+                        <span class="tech-badge">JavaScript</span>
+                        <span class="tech-badge">Tiled Map Editor</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-text">
+                <p>
+                    Learn about space weather and its impact on our daily lives
+                    through an interactive gaming experience.
+                </p>
+                <p>© 2025 GannonTale - Educational Space Weather Game</p>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

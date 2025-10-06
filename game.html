@@ -1,0 +1,1013 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Gannon Tale - The Game</title>
+        <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
+        <style>
+            body {
+                margin: 0;
+                background: #1a202c;
+                overflow: hidden;
+            }
+            #game-container {
+                margin: 12px auto;
+                box-shadow: 0 6px 48px #222;
+                border-radius: 12px;
+                border: 4px solid #444;
+                display: block;
+                width: 800px;
+                height: 600px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="game-container"></div>
+        <script>
+            const storyScenes = [
+                {
+                    background: {
+                        src: "assets/sun-gif.png",
+                        width: 400,
+                        height: 400,
+                        frames: 81,
+                    },
+                    text: "Space holds many mysteries and phenomena.",
+                    speaker: "????",
+                },
+                {
+                    background: {
+                        src: "assets/sun-gif.png",
+                        width: 400,
+                        height: 400,
+                        frames: 81,
+                    },
+                    text: "Activity on the Sun’s surface creates a type of weather called space weather",
+                    speaker: "????",
+                },
+                {
+                    background: {
+                        src: "assets/sun-gif.png",
+                        width: 400,
+                        height: 400,
+                        frames: 81,
+                    },
+                    text: "The Sun is really far away—about 93 million miles (150 million kilometers)—from Earth. However, space weather can affect Earth and the rest of the solar system.",
+                    speaker: "????",
+                },
+                {
+                    background: {
+                        src: "assets/sun-gif.png",
+                        width: 400,
+                        height: 400,
+                        frames: 81,
+                    },
+                    text: "All the interactions between stars, moons, planets and asteroids can potentially impact life on earth.",
+                    speaker: "????",
+                },
+                {
+                    background: {
+                        src: "assets/sun2-gif.png",
+                        width: 777,
+                        height: 437,
+                        frames: 36,
+                    },
+                    text: "Among other activities, geomagnetic storms can have the biggest impact, causing CMEs (Coronal Mass Ejections).",
+                    speaker: "????",
+                },
+                {
+                    background: {
+                        src: "assets/sun2-gif.png",
+                        width: 777,
+                        height: 437,
+                        frames: 36,
+                    },
+                    text: "This is where I was born…",
+                    speaker: "????",
+                },
+                {
+                    background: {
+                        src: "assets/sun2-gif.png",
+                        width: 777,
+                        height: 437,
+                        frames: 36,
+                    },
+                    text: "I am Gannon, a solar storm happening in May 2024. I was created by accident, when two electromagnetic fields in the sun collided, causing a solar flare on the surface, and a CME unleashing energy to outer space.",
+                    speaker: "Gannon Storm",
+                },
+                {
+                    background: {
+                        src: "assets/sun2-gif.png",
+                        width: 777,
+                        height: 437,
+                        frames: 36,
+                    },
+                    text: "I am agitated and energetic… and quite fast!",
+                    speaker: "Gannon Storm",
+                },
+                {
+                    background: {
+                        src: "assets/sun2-gif.png",
+                        width: 777,
+                        height: 437,
+                        frames: 36,
+                    },
+                    text: "I am traveling towards EARTH, although it wasn’t my intention, since my creation and direction was random.",
+                    speaker: "Gannon Storm",
+                },
+                {
+                    background: {
+                        src: "assets/sun2-gif.png",
+                        width: 777,
+                        height: 437,
+                        frames: 36,
+                    },
+                    text: "During my journey, I am expanding my size, and in time, I will find EARTH’s magnetosphere.",
+                    speaker: "Gannon Storm",
+                },
+                {
+                    background: {
+                        src: "assets/sun2-gif.png",
+                        width: 777,
+                        height: 437,
+                        frames: 36,
+                    },
+                    text: "Some say I might disturb this magnetic field… Who knows how this will impact the planet?",
+                    speaker: "Gannon Storm",
+                },
+            ];
+
+            class VisualNovelScene extends Phaser.Scene {
+                constructor() {
+                    super("VisualNovelScene");
+                }
+                preload() {
+                    storyScenes.forEach((scene, i) => {
+                        this.load.spritesheet("bg" + i, scene.background.src, {
+                            frameWidth: scene.background.width,
+                            frameHeight: scene.background.height,
+                        });
+                    });
+                }
+                create() {
+                    storyScenes.forEach((scene, i) =>
+                        this.anims.create({
+                            key: "bgAnim" + i,
+                            frames: this.anims.generateFrameNumbers("bg" + i, {
+                                start: 0,
+                                end: scene.background.frames - 1,
+                            }),
+                            frameRate: 15,
+                            repeat: -1,
+                        }),
+                    );
+                    this.currentScene = 0;
+                    this.bg = this.add.sprite(400, 300, "bg0").setOrigin(0.5);
+                    this.bg.play("bgAnim0");
+                    this.scaleBG();
+                    const boxHeight = 200;
+                    const boxY = 600 - boxHeight;
+
+                    // Dialogue box layers - centralize and fix width for text
+                    this.add
+                        .rectangle(
+                            400,
+                            boxY + boxHeight / 2,
+                            780,
+                            boxHeight - 20,
+                            0x000000,
+                        )
+                        .setOrigin(0.5);
+                    this.add
+                        .rectangle(
+                            400,
+                            boxY + boxHeight / 2,
+                            760,
+                            boxHeight - 40,
+                            0xf8f8f8,
+                        )
+                        .setOrigin(0.5);
+                    this.add
+                        .rectangle(
+                            400,
+                            boxY + boxHeight / 2,
+                            740,
+                            boxHeight - 60,
+                            0xe0e0e0,
+                        )
+                        .setOrigin(0.5);
+
+                    this.speakerBox = this.add
+                        .rectangle(80, boxY - 10, 140, 35, 0x3b82f6)
+                        .setOrigin(0.5);
+                    this.speakerText = this.add
+                        .text(80, boxY - 10, "", {
+                            fontFamily: "Courier New, monospace",
+                            fontSize: "18px",
+                            color: "#fff",
+                        })
+                        .setOrigin(0.5);
+
+                    this.dialogueText = this.add.text(48, boxY + 32, "", {
+                        fontFamily: "Courier New, monospace",
+                        fontSize: "20px",
+                        color: "#222",
+                        wordWrap: { width: 680 },
+                        lineSpacing: 8,
+                    });
+
+                    this.continueArrow = this.add
+                        .text(750, boxY + boxHeight - 50, "▼", {
+                            fontFamily: "Arial",
+                            fontSize: "24px",
+                            color: "#3b82f6",
+                        })
+                        .setOrigin(0.5);
+                    this.continueArrow.setVisible(false);
+
+                    this.tweens.add({
+                        targets: this.continueArrow,
+                        alpha: 0.3,
+                        duration: 500,
+                        yoyo: true,
+                        repeat: -1,
+                    });
+
+                    this.add
+                        .text(400, 20, "Press SPACE or CLICK to continue", {
+                            fontFamily: "Arial",
+                            fontSize: "16px",
+                            color: "#fff",
+                            backgroundColor: "#000",
+                            padding: { x: 10, y: 5 },
+                        })
+                        .setOrigin(0.5)
+                        .setDepth(100);
+
+                    this.input.keyboard.on("keydown-SPACE", () =>
+                        this.handleInput(),
+                    );
+                    this.input.on("pointerdown", () => this.handleInput());
+
+                    this.createTypingSound();
+
+                    this.showScene(0);
+                }
+
+                createTypingSound() {
+                    this.audioContext = new (window.AudioContext ||
+                        window.webkitAudioContext)();
+                }
+
+                playTypingSound() {
+                    if (!this.audioContext) return;
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(this.audioContext.destination);
+                    oscillator.frequency.value = 800;
+                    oscillator.type = "square";
+                    gainNode.gain.setValueAtTime(
+                        0.1,
+                        this.audioContext.currentTime,
+                    );
+                    gainNode.gain.exponentialRampToValueAtTime(
+                        0.01,
+                        this.audioContext.currentTime + 0.05,
+                    );
+                    oscillator.start(this.audioContext.currentTime);
+                    oscillator.stop(this.audioContext.currentTime + 0.05);
+                }
+
+                scaleBG() {
+                    const scaleX = 800 / this.bg.width;
+                    const scaleY = 600 / this.bg.height;
+                    const scale = Math.max(scaleX, scaleY);
+                    this.bg.setScale(scale);
+                }
+                showScene(i) {
+                    if (i >= storyScenes.length) {
+                        this.scene.start("SimpleImageScene");
+                        return;
+                    }
+                    this.currentScene = i;
+                    this.tweens.add({
+                        targets: this.bg,
+                        alpha: 0,
+                        duration: 300,
+                        onComplete: () => {
+                            // this.bg.setTexture("bg" + i);
+                            this.bg.setTexture("bg" + i);
+                            this.bg.play("bgAnim" + i);
+                            this.scaleBG();
+                            this.tweens.add({
+                                targets: this.bg,
+                                alpha: 1,
+                                duration: 300,
+                            });
+                        },
+                    });
+
+                    this.speakerText.setText(storyScenes[i].speaker);
+                    this.text = storyScenes[i].text;
+                    this.displayedText = "";
+                    this.textIdx = 0;
+                    this.isTyping = true;
+                    this.continueArrow.setVisible(false);
+                    this.dialogueText.setText("");
+                    this.typeText();
+                }
+                typeText() {
+                    if (this.textIdx < this.text.length) {
+                        this.displayedText += this.text[this.textIdx];
+                        this.dialogueText.setText(this.displayedText);
+                        this.textIdx++;
+                        if (this.textIdx % 2 === 0) {
+                            this.playTypingSound();
+                        }
+                        this.time.delayedCall(50, () => this.typeText());
+                    } else {
+                        this.isTyping = false;
+                        this.continueArrow.setVisible(true);
+                    }
+                }
+                handleInput() {
+                    if (this.isTyping) {
+                        this.dialogueText.setText(this.text);
+                        this.textIdx = this.text.length;
+                        this.isTyping = false;
+                        this.continueArrow.setVisible(true);
+                    } else {
+                        this.showScene(this.currentScene + 1);
+                    }
+                }
+            }
+
+            class SimpleImageScene extends Phaser.Scene {
+                constructor() {
+                    super("SimpleImageScene");
+                }
+
+                preload() {
+                    this.load.image("myImage", "assets/GannonTale.png");
+                }
+
+                create() {
+                    this.currentScene = 0;
+
+                    // Render image centered, fade-in
+                    this.myImage = this.add
+                        .image(400, 300, "myImage")
+                        .setOrigin(0.5)
+                        .setAlpha(0);
+                    this.myImage.setScale(
+                        Math.min(
+                            800 / this.myImage.width,
+                            600 / this.myImage.height,
+                        ),
+                    );
+                    this.tweens.add({
+                        targets: this.myImage,
+                        alpha: 1,
+                        duration: 1000,
+                    });
+
+                    // Continue text between center and arrow
+                    this.continueText = this.add
+                        .text(400, 450, "Press SPACE to continue", {
+                            fontFamily: "monospace",
+                            fontSize: "20px",
+                            color: "#ffffff",
+                            backgroundColor: "#000000",
+                            padding: { x: 10, y: 5 },
+                        })
+                        .setOrigin(0.5)
+                        .setAlpha(0);
+                    this.tweens.add({
+                        targets: this.continueText,
+                        alpha: 1,
+                        delay: 1000,
+                        duration: 500,
+                    });
+
+                    // Continue arrow at bottom center, pulsing
+                    this.continueArrow = this.add
+                        .text(400, 580, "▼", {
+                            fontFamily: "monospace",
+                            fontSize: "24px",
+                            color: "#3b82f6",
+                        })
+                        .setOrigin(0.5)
+                        .setAlpha(0);
+                    this.tweens.add({
+                        targets: this.continueArrow,
+                        alpha: 1,
+                        delay: 1000,
+                        duration: 500,
+                        yoyo: true,
+                        repeat: -1,
+                    });
+
+                    // Interactive input zone at upper center of screen
+                    this.inputZone = this.add
+                        .zone(400, 100, 200, 100)
+                        .setOrigin(0.5)
+                        .setInteractive();
+
+                    this.input.keyboard.on("keydown-SPACE", () =>
+                        this.handleInput(),
+                    );
+                    this.inputZone.on("pointerdown", () => this.handleInput());
+                }
+
+                handleInput() {
+                    // Continue action here; e.g., next scene or log
+                    // console.log("Continue triggered");
+                    this.scene.start("WorldScene");
+                }
+            }
+
+            // --- World (Map) Scene ---
+            class WorldScene extends Phaser.Scene {
+                constructor() {
+                    super("WorldScene");
+                }
+                preload() {
+                    this.load.image(
+                        "tiles",
+                        "https://mikewesthad.github.io/phaser-3-tilemap-blog-posts/post-1/assets/tilesets/tuxmon-sample-32px-extruded.png",
+                    );
+                    this.load.tilemapTiledJSON(
+                        "map",
+                        "assets/tuxemon-town-custom.json",
+                    );
+                    this.load.atlas(
+                        "atlas",
+                        "https://mikewesthad.github.io/phaser-3-tilemap-blog-posts/post-1/assets/atlas/atlas.png",
+                        "https://mikewesthad.github.io/phaser-3-tilemap-blog-posts/post-1/assets/atlas/atlas.json",
+                    );
+
+                    this.load.atlas(
+                        "npcs",
+                        "assets/npcs.png",
+                        "assets/npcs.json",
+                    );
+                }
+                create() {
+                    // Track dialogue states for nasa_guy (npc6)
+                    this.nasa_guy_early_shown = false;
+                    this.nasa_guy_dialogue_shown = false;
+                    const map = this.make.tilemap({ key: "map" });
+                    const tileset = map.addTilesetImage(
+                        "tuxmon-sample-32px-extruded",
+                        "tiles",
+                    );
+                    const belowLayer = map.createLayer(
+                        "Below Player",
+                        tileset,
+                        0,
+                        0,
+                    );
+                    const worldLayer = map.createLayer("World", tileset, 0, 0);
+                    const aboveLayer = map.createLayer(
+                        "Above Player",
+                        tileset,
+                        0,
+                        0,
+                    );
+                    worldLayer.setCollisionByProperty({ collides: true });
+                    aboveLayer.setDepth(10);
+
+                    const spawn = map.findObject(
+                        "Objects",
+                        (obj) => obj.name === "Spawn Point",
+                    );
+                    this.player = this.physics.add
+                        .sprite(spawn.x, spawn.y, "atlas", "misa-front")
+                        .setSize(30, 40)
+                        .setOffset(0, 24);
+                    this.physics.add.collider(this.player, worldLayer);
+
+                    const anims = this.anims;
+                    anims.create({
+                        key: "misa-left-walk",
+                        frames: anims.generateFrameNames("atlas", {
+                            prefix: "misa-left-walk.",
+                            start: 0,
+                            end: 3,
+                            zeroPad: 3,
+                        }),
+                        frameRate: 10,
+                        repeat: -1,
+                    });
+                    anims.create({
+                        key: "misa-right-walk",
+                        frames: anims.generateFrameNames("atlas", {
+                            prefix: "misa-right-walk.",
+                            start: 0,
+                            end: 3,
+                            zeroPad: 3,
+                        }),
+                        frameRate: 10,
+                        repeat: -1,
+                    });
+                    anims.create({
+                        key: "misa-front-walk",
+                        frames: anims.generateFrameNames("atlas", {
+                            prefix: "misa-front-walk.",
+                            start: 0,
+                            end: 3,
+                            zeroPad: 3,
+                        }),
+                        frameRate: 10,
+                        repeat: -1,
+                    });
+                    anims.create({
+                        key: "misa-back-walk",
+                        frames: anims.generateFrameNames("atlas", {
+                            prefix: "misa-back-walk.",
+                            start: 0,
+                            end: 3,
+                            zeroPad: 3,
+                        }),
+                        frameRate: 10,
+                        repeat: -1,
+                    });
+
+                    const camera = this.cameras.main;
+                    camera.startFollow(this.player);
+                    camera.setBounds(
+                        0,
+                        0,
+                        map.widthInPixels,
+                        map.heightInPixels,
+                    );
+
+                    this.cursors = this.input.keyboard.createCursorKeys();
+
+                    // this.add
+                    //     .text(
+                    //         16,
+                    //         16,
+                    //         'Arrow keys to move\nPress "D" to show hitboxes',
+                    //         {
+                    //             font: "18px monospace",
+                    //             fill: "#000",
+                    //             padding: { x: 20, y: 10 },
+                    //             backgroundColor: "#fff",
+                    //         },
+                    //     )
+                    //     .setScrollFactor(0)
+                    //     .setDepth(30);
+
+                    this.input.keyboard.once("keydown-D", () => {
+                        this.physics.world.createDebugGraphic();
+                        const graphics = this.add
+                            .graphics()
+                            .setAlpha(0.75)
+                            .setDepth(20);
+                        worldLayer.renderDebug(graphics, {
+                            tileColor: null,
+                            collidingTileColor: new Phaser.Display.Color(
+                                243,
+                                134,
+                                48,
+                                255,
+                            ),
+                            faceColor: new Phaser.Display.Color(
+                                40,
+                                39,
+                                37,
+                                255,
+                            ),
+                        });
+                    });
+
+                    // Add NPCs only near doors - assuming doors have type "door" in map objects
+                    const doors = map.filterObjects(
+                        "Objects",
+                        (obj) =>
+                            obj.name && obj.name.toLowerCase().includes("door"),
+                    );
+                    this.npcs = [];
+                    this.npcsNames = [
+                        "citizen",
+                        "farmer",
+                        "pigeon_fan",
+                        "pilot",
+                        "office_worker",
+                        "nasa_guy",
+                    ];
+                    doors.forEach((door, idx) => {
+                        let npc = this.physics.add
+                            .sprite(
+                                door.x,
+                                door.y,
+                                "npcs",
+                                this.npcsNames[idx % this.npcsNames.length],
+                            )
+                            .setImmovable(true)
+                            .setInteractive();
+                        this.npcs.push(npc);
+                    });
+
+                    this.currentNPC = null;
+                    this.physics.add.collider(this.player, this.npcs);
+                    this.physics.add.overlap(
+                        this.player,
+                        this.npcs,
+                        (player, npc) => {
+                            this.currentNPC = npc;
+                        },
+                        null,
+                        this,
+                    );
+
+                    // Space key interaction when near NPC
+                    this.input.keyboard.on("keydown-SPACE", () => {
+                        if (this.currentNPC) {
+                            this.openNPCDialogue(
+                                this.npcs.indexOf(this.currentNPC),
+                            );
+                        }
+                    });
+
+                    // this.npcs.forEach((npc, idx) => {
+                    //     npc.setInteractive();
+                    //     npc.on("pointerdown", () => {
+                    //         this.openNPCDialogue(idx);
+                    //     });
+                    // });\
+
+                    this.scene.pause();
+                    this.scene.launch("PlayerDialogue", {
+                        dialogueIndex: 0,
+                        playerPos: { x: this.player.x, y: this.player.y },
+                        parentSceneKey: this.scene.key,
+                    });
+                }
+                openNPCDialogue(npcIdx) {
+                    if (npcIdx < 0 || npcIdx >= this.npcs.length) return;
+                    const npcKey = "npc" + (npcIdx + 1);
+                    const npcName = this.npcsNames[npcIdx];
+
+                    // Special handling for nasa_guy (npc6)
+                    if (npcIdx == 5) {
+                        // Show early player dialogue first (only once)
+                        if (!this.nasa_guy_early_shown) {
+                            this.nasa_guy_early_shown = true;
+                            this.scene.pause();
+                            this.scene.launch("PlayerDialogue", {
+                                dialogueIndex: 1,
+                                playerPos: {
+                                    x: this.player.x,
+                                    y: this.player.y,
+                                },
+                                parentSceneKey: this.scene.key,
+                                nextAction: "nasa_guy_dialogue",
+                                npcIdx: npcIdx,
+                            });
+                            return;
+                        }
+                    }
+
+                    this.scene.pause();
+                    this.scene.launch("NPCDialogue", {
+                        npc: npcKey,
+                        npcName: npcName,
+                        playerPos: { x: this.player.x, y: this.player.y },
+                        parentSceneKey: this.scene.key,
+                        npcIdx: npcIdx,
+                    });
+                }
+                update() {
+                    const speed = 200;
+                    const player = this.player;
+                    const cursors = this.cursors;
+
+                    this.currentNPC = null; // reset each frame to detect current overlap
+                    player.body.setVelocity(0);
+
+                    if (cursors.left.isDown) player.body.setVelocityX(-speed);
+                    else if (cursors.right.isDown)
+                        player.body.setVelocityX(speed);
+
+                    if (cursors.up.isDown) player.body.setVelocityY(-speed);
+                    else if (cursors.down.isDown)
+                        player.body.setVelocityY(speed);
+
+                    player.body.velocity.normalize().scale(speed);
+
+                    if (cursors.left.isDown)
+                        player.anims.play("misa-left-walk", true);
+                    else if (cursors.right.isDown)
+                        player.anims.play("misa-right-walk", true);
+                    else if (cursors.up.isDown)
+                        player.anims.play("misa-back-walk", true);
+                    else if (cursors.down.isDown)
+                        player.anims.play("misa-front-walk", true);
+                    else {
+                        player.anims.stop();
+                        if (player.body.velocity.x < 0)
+                            player.setTexture("atlas", "misa-left");
+                        else if (player.body.velocity.x > 0)
+                            player.setTexture("atlas", "misa-right");
+                        else if (player.body.velocity.y < 0)
+                            player.setTexture("atlas", "misa-back");
+                        else if (player.body.velocity.y > 0)
+                            player.setTexture("atlas", "misa-front");
+                    }
+                    const playerX = this.player.x;
+                    const playerY = this.player.y;
+
+                    this.npcs.forEach((npc, idx) => {
+                        const dist = Phaser.Math.Distance.Between(
+                            playerX,
+                            playerY,
+                            npc.x,
+                            npc.y,
+                        );
+                        if (dist < 50) {
+                            // threshold for interaction range
+                            this.currentNPC = npc;
+                        }
+                    });
+                }
+            }
+
+            // NPC Dialogue scene using existing dialogue style
+            class NPCDialogue extends Phaser.Scene {
+                constructor() {
+                    super({ key: "NPCDialogue" });
+                }
+                init(data) {
+                    this.npc = data.npc;
+                    this.npcName = data.npcName || "NPC";
+                    this.callerPos = data.playerPos;
+                    this.parentSceneKey = data.parentSceneKey || "WorldScene";
+                    this.npcIdx = data.npcIdx;
+                }
+                create() {
+                    let dialogues = {
+                        npc1: [
+                            "The weather report yesterday said it was going to rain, but today is very sunny!",
+                            "Maybe something disturbed the sensors they use…",
+                        ],
+                        npc2: [
+                            "Today was the day to harvest the crops, but my tractor's GPS doesn't work!",
+                            "Oh my… I won't be able to make my famous potato salad…",
+                        ],
+                        npc3: [
+                            "We had to cancel the pigeon race for today.",
+                            "My dad told me it's because something is affecting the pigeon's ability to find home…",
+                        ],
+                        npc4: [
+                            "After months, I finally got a well deserved vacation!",
+                            "However, I can't fly my personal plane today… my HF radio isn't working for some reason… how will I know where I'm flying to?",
+                            "One of my friends also told me that they had to re-route some planes…",
+                        ],
+                        npc5: [
+                            "We're out of energy in the office building, so I'm now unable to work.",
+                            "Not that I wanted to…",
+                        ],
+                        npc6: [
+                            "Hello! You might be wondering what is happening given all the complaints.",
+                            "We are currently being affected by the Gannon Storm CME, a Coronal Mass Ejection. This is a consequence of bad space weather conditions.",
+                            "This storm was named after space physicist Jennifer Gannon.",
+                            "Dr Gannon encouraged young women to enter and lead the physics and space weather communities. She was a mentor and leader at the NSF-sponsored Geospace Environmental Modeling and Coupling Energetics and Dynamics of Atmospheric Regions workshops.",
+                            "CME's and solar flares can be classified as B, C, M and X classes, Gannon being classified as X, the highest in the scale. It is actually the strongest we've had in 20 years!",
+                            "This phenomenon can affect earth in multiple ways as you might've seen today. HF radio waves can be disturbed by the changes as the CME collides with EARTH's magnetosphere, the group of EARTH magnetic fields.",
+                            "Since radio waves are disturbed, GPS and phone calls might not behave as intended.",
+                            "Power systems can also be impacted, so companies can turn off delivery for some time to prevent anomalies, as is the case today.",
+                            "And fun fact! Pigeons can sense EARTH's magnetic field and use it as a map. Since this map is disturbed today, we can't have the city's famous pigeon race, because our little friends could get lost.",
+                            "Some places in the world are experiencing aurora borealis today, something that usually happens in the polar regions.",
+                        ],
+                    };
+                    let lines = dialogues[this.npc] || ["..."];
+
+                    const boxHeight = 220;
+                    const boxY = 600 - boxHeight;
+
+                    // Dialogue box layers
+                    this.add
+                        .rectangle(
+                            400,
+                            boxY + boxHeight / 2,
+                            780,
+                            boxHeight - 20,
+                            0x000000,
+                        )
+                        .setOrigin(0.5);
+                    this.add
+                        .rectangle(
+                            400,
+                            boxY + boxHeight / 2,
+                            760,
+                            boxHeight - 40,
+                            0xf8f8f8,
+                        )
+                        .setOrigin(0.5);
+                    this.add
+                        .rectangle(
+                            400,
+                            boxY + boxHeight / 2,
+                            740,
+                            boxHeight - 60,
+                            0xe0e0e0,
+                        )
+                        .setOrigin(0.5);
+
+                    // Speaker name box
+                    this.speakerBox = this.add
+                        .rectangle(80, boxY - 10, 140, 35, 0x3b82f6)
+                        .setOrigin(0.5);
+
+                    let name = this.npcName.replace(/_/g, " ").toUpperCase();
+                    if (name == "NASA GUY") name = "Nasa Scientist";
+                    this.speakerText = this.add
+                        .text(80, boxY - 10, name, {
+                            fontFamily: "Courier New, monospace",
+                            fontSize: "16px",
+                            color: "#fff",
+                        })
+                        .setOrigin(0.5);
+
+                    this.textObj = this.add.text(48, boxY + 32, "", {
+                        fontSize: "20px",
+                        color: "#222",
+                        wordWrap: { width: 680 },
+                        fontFamily: "Courier New",
+                        lineSpacing: 8,
+                    });
+
+                    this.index = 0;
+
+                    this.showLine = () => {
+                        if (this.index < lines.length) {
+                            this.textObj.setText(lines[this.index++]);
+                        } else {
+                            this.scene.stop();
+                            // After nasa_guy dialogue, show late player dialogue
+                            if (this.npc == "npc6") {
+                                this.scene.launch("PlayerDialogue", {
+                                    dialogueIndex: 2,
+                                    playerPos: this.callerPos,
+                                    parentSceneKey: this.parentSceneKey,
+                                    nextAction: "end_game",
+                                });
+                                return;
+                            }
+                            this.scene.resume(this.parentSceneKey);
+                        }
+                    };
+
+                    this.input.keyboard.on("keydown-SPACE", this.showLine);
+                    this.input.on("pointerdown", this.showLine);
+
+                    this.showLine();
+                }
+            }
+
+            // Player Dialogue scene - for player character speech
+            class PlayerDialogue extends Phaser.Scene {
+                constructor() {
+                    super({ key: "PlayerDialogue" });
+                }
+                init(data) {
+                    this.dialogueIndex = data.dialogueIndex || 0;
+                    this.playerPos = data.playerPos;
+                    this.parentSceneKey = data.parentSceneKey || "WorldScene";
+                    this.nextAction = data.nextAction || null;
+                    this.npcIdx = data.npcIdx;
+                }
+                create() {
+                    // Define different dialogue sequences that can be triggered by index
+                    let dialogueSequences = {
+                        0: [
+                            "Well, playing with my friend has been fun! I hadn’t seen him since he moved here!",
+                            "I better call mom to pick me up.",
+                            "Phone vibrating... NO SERVICE",
+                            "Huh, strange…my phone has no service. I swear it was working a while ago…",
+                            "I should try talking to the other citizens to understand what is happening.",
+                            "You should PRESS ARROWS to move. Press SPACE to interact.",
+                        ],
+                        1: [
+                            "Hello, are you the Nasa scientist visiting this town?",
+                            "What is happening here?",
+                        ],
+                        2: [
+                            "That’s amazing! I was wondering why so much was happening today…",
+                            "Phone vibrating... SERVICE BACK",
+                            "Hey! Seems like I have service again! I better call mom to pick me up!",
+                        ],
+                    };
+
+                    let lines = dialogueSequences[this.dialogueIndex] || [
+                        "...",
+                    ];
+
+                    const boxHeight = 220;
+                    const boxY = 600 - boxHeight;
+
+                    // Dialogue box layers
+                    this.add
+                        .rectangle(
+                            400,
+                            boxY + boxHeight / 2,
+                            780,
+                            boxHeight - 20,
+                            0x000000,
+                        )
+                        .setOrigin(0.5);
+                    this.add
+                        .rectangle(
+                            400,
+                            boxY + boxHeight / 2,
+                            760,
+                            boxHeight - 40,
+                            0xf8f8f8,
+                        )
+                        .setOrigin(0.5);
+                    this.add
+                        .rectangle(
+                            400,
+                            boxY + boxHeight / 2,
+                            740,
+                            boxHeight - 60,
+                            0xe0e0e0,
+                        )
+                        .setOrigin(0.5);
+
+                    // Speaker name box - different color for player
+                    this.speakerBox = this.add
+                        .rectangle(80, boxY - 10, 140, 35, 0x10b981)
+                        .setOrigin(0.5);
+                    this.speakerText = this.add
+                        .text(80, boxY - 10, "Player", {
+                            fontFamily: "Courier New, monospace",
+                            fontSize: "18px",
+                            color: "#fff",
+                        })
+                        .setOrigin(0.5);
+
+                    this.textObj = this.add.text(48, boxY + 32, "", {
+                        fontSize: "20px",
+                        color: "#222",
+                        wordWrap: { width: 680 },
+                        fontFamily: "Courier New",
+                        lineSpacing: 8,
+                    });
+
+                    this.index = 0;
+
+                    this.showLine = () => {
+                        if (this.index < lines.length) {
+                            this.textObj.setText(lines[this.index++]);
+                        } else {
+                            this.scene.stop();
+
+                            // Handle different next actions
+                            if (this.nextAction === "nasa_guy_dialogue") {
+                                // After early dialogue, trigger nasa_guy NPC dialogue
+                                const worldScene = this.scene.get(
+                                    this.parentSceneKey,
+                                );
+                                worldScene.openNPCDialogue(this.npcIdx);
+                            } else if (this.nextAction === "end_game") {
+                                // After late dialogue, end the game
+                                this.scene.stop(this.parentSceneKey);
+                                this.scene.start("SimpleImageScene");
+                            } else {
+                                // Default: just resume parent scene
+                                this.scene.resume(this.parentSceneKey);
+                            }
+                        }
+                    };
+
+                    this.input.keyboard.on("keydown-SPACE", this.showLine);
+                    this.input.on("pointerdown", this.showLine);
+
+                    this.showLine();
+                }
+            }
+
+            const config = {
+                type: Phaser.AUTO,
+                width: 800,
+                height: 600,
+                parent: "game-container",
+                pixelArt: true,
+                physics: { default: "arcade", arcade: { gravity: { y: 0 } } },
+                scene: [
+                    VisualNovelScene,
+                    SimpleImageScene,
+                    WorldScene,
+                    NPCDialogue,
+                    PlayerDialogue,
+                ],
+            };
+
+            new Phaser.Game(config);
+        </script>
+    </body>
+</html>
